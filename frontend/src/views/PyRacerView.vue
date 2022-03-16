@@ -42,7 +42,9 @@ function get_race_codes() {
         })
 }
 
-function race_finished() {
+function race_finished(time, wpm) {
     current_race_code.value = {};
+    console.log(time);
+    console.log(wpm);
 }
 </script>

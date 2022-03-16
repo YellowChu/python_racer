@@ -1,6 +1,15 @@
 <template>
     <div class="container-fluid">
+        <div class="row d-flex text-center align-items-center justify-content-center">
+            <div class="col">
+                <h2>{{ countdown }}</h2>
+            </div>
+            <div class="col">
+                <h2>{{ stopwatch }}</h2>
+            </div>
+        </div>
         <div class="row">
+            <!-- <font-awesome-icon :icon="['fas', 'clock']" /> -->
             <div class="code-block text-start" style="font-size: 2rem;">
                 <pre v-html="code_block.join('')"></pre>
             </div>
@@ -12,6 +21,7 @@
                 class="form-control"
                 placeholder="Type here"
 
+                :disabled="input_disabled"
                 @keydown="keyboard_pressed"
                 ref="template_txt_input"
                 v-model="user_input"
@@ -23,7 +33,7 @@
 <script setup>
 import axios from "axios";
     
-import { onMounted, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 
 
 const props = defineProps({
@@ -32,11 +42,14 @@ const props = defineProps({
 const emit = defineEmits(["finished"]);
 const template_txt_input = ref(null);
 
-
-const show_code = ref(true);
+let user_code_block = "";
 const code_block = ref(props.code_text.split("").concat([""]));
 
-let user_code_block = "";
+const countdown = ref(null);
+const stopwatch = ref(0);
+let stopwatch_interval;
+
+const input_disabled = ref(true);
 const user_input = ref("");
 const user_idx = ref(0);
 
@@ -44,8 +57,36 @@ code_block.value[user_idx.value] = "<u>" + code_block.value[user_idx.value] + "<
 
 
 onMounted(() => {
-    template_txt_input.value.focus();
+    console.log(props.code_text);
+    countdown.value = 3;
+    let countdown_interval = setInterval(() => {
+        if (countdown.value === 1) {
+            clearInterval(countdown_interval);
+            start();
+        } else {
+            countdown.value--;
+        }             
+    }, 1000);
 })
+
+function start() {
+    countdown.value = "Start";
+    input_disabled.value = false;
+    nextTick(() => {
+        template_txt_input.value.focus();
+    });
+
+    stopwatch_interval = setInterval(() => {
+        stopwatch.value++;
+    }, 1000);
+}
+
+function end() {
+    clearInterval(stopwatch_interval);
+    let words = props.code_text.split(" ").filter(n => n);
+    let wpm = (words.length / (stopwatch.value / 60)).toFixed(2);
+    emit("finished", stopwatch.value, wpm);
+}
 
 function is_key_printable(keycode) {
     let printable = 
@@ -104,8 +145,7 @@ function keyboard_pressed(e) {
                 }
 
                 if (user_code_block.length == props.code_text.length && user_code_block == props.code_text) {
-                    console.log("Nice!");
-                    emit("finished");
+                    end();
                 }
             }
             break;
