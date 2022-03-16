@@ -1,12 +1,12 @@
 <template>
     <div class="base">
-        <TypeRacer></TypeRacer>
+        <PyRacerView></PyRacerView>
     </div>
 </template>
 
 
 <script setup>
-    import TypeRacer from "./components/PythonRacer.vue";
+    import PyRacerView from "@/views/PyRacerView.vue";
 </script>
 
 

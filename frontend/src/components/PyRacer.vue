@@ -1,63 +1,51 @@
 <template>
-    <div class="d-flex align-items-center justify-content-center h-100">
-        <div class="container-fluid d-flex text-center align-items-center justify-content-center">
-            <div v-if="!show_code" class="row align-items-center justify-content-center">
-                <button class="btn btn-primary w-25" @click="show_code=true">Generate Python code</button>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="code-block text-start" style="font-size: 2rem;">
+                <pre v-html="code_block.join('')"></pre>
             </div>
+        </div>
 
-            <div v-if="show_code" class="mt-4">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="code-block text-start" style="font-size: 2rem;">
-                            <pre v-html="code_block.join('')"></pre>
-                        </div>
-                    </div>
-    
-                    <div class="row text-start mt-2">
-                        <input
-                            type="text"
-                            id="user-input"
-                            class="form-control"
-                            placeholder="Type here"
-                            @keydown="keyboard_pressed"
-                            v-model="user_input"
-                        >
-                    </div>
-                </div>
-            </div>
+        <div class="row text-start mt-2">
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Type here"
+
+                @keydown="keyboard_pressed"
+                ref="template_txt_input"
+                v-model="user_input"
+            >
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import axios from "axios";
+    
+import { onMounted, ref } from "vue";
 
-import python_codes from "../resources/python_codes.js";
+
+const props = defineProps({
+    code_text: String,
+});
+const emit = defineEmits(["finished"]);
+const template_txt_input = ref(null);
 
 
-let code_n = 0;
-
-let code_text = python_codes[code_n];
 const show_code = ref(true);
-const code_block = ref(code_text.split("").concat([""]));
+const code_block = ref(props.code_text.split("").concat([""]));
 
 let user_code_block = "";
 const user_input = ref("");
 const user_idx = ref(0);
 
+code_block.value[user_idx.value] = "<u>" + code_block.value[user_idx.value] + "</u>";
+
 
 onMounted(() => {
-    code_block.value[user_idx.value] = "<u>" + code_block.value[user_idx.value] + "</u>";
+    template_txt_input.value.focus();
 })
-
-
-function update_mark() {
-    let i = user_idx.value;
-
-    code_block.value = code_block.value.replace("<u>", "").replace("</u>", "").replace("<mark>", "").replace("</mark>", "");
-    code_block.value = [code_block.value.slice(0, i-1), "<mark>", code_block.value.slice(i-1, i), "</mark>",code_block.value.slice(i)].join("")
-    update_underline()
-}
 
 function is_key_printable(keycode) {
     let printable = 
@@ -105,7 +93,7 @@ function keyboard_pressed(e) {
                 code_block.value[user_idx.value-1] = code_block.value[user_idx.value-1].replace("<u>", "").replace("</u>", "");
                 code_block.value[user_idx.value] = "<u>" + code_block.value[user_idx.value] + "</u>";
 
-                if (user_code_block.charAt(user_idx.value-1) == code_text.charAt(user_idx.value-1)) {
+                if (user_code_block.charAt(user_idx.value-1) == props.code_text.charAt(user_idx.value-1)) {
                     code_block.value[user_idx.value-1] = "<mark class='correct'>" + code_block.value[user_idx.value-1] + "</mark>";
                 } else {
                     code_block.value[user_idx.value-1] = "<mark class='incorrect'>" + code_block.value[user_idx.value-1] + "</mark>";
@@ -115,13 +103,9 @@ function keyboard_pressed(e) {
                     user_input.value = "";
                 }
 
-                if (user_code_block.length == code_text.length && user_code_block == code_text) {
-                    code_n++;
-                    code_text = python_codes[code_n];
-                    code_block.value = code_text.split("").concat([""]);
-                    user_code_block = "";
-                    user_input.value = "";
-                    user_idx.value = 0;
+                if (user_code_block.length == props.code_text.length && user_code_block == props.code_text) {
+                    console.log("Nice!");
+                    emit("finished");
                 }
             }
             break;
