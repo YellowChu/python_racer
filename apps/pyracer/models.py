@@ -1,3 +1,5 @@
 from django.db import models
 
-# Create your models here.
+
+class Code(models.Model):
+    code_block = models.TextField(blank=True)

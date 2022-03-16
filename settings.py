@@ -32,9 +32,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+INTERNAL_IPS = ["127.0.0.1"]
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'apps.common',
     'apps.pyracer',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
