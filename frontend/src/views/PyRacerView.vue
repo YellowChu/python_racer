@@ -8,6 +8,8 @@
                 ></PyRacer>
             </div>
             <div v-else>
+                Time: {{ finished_time }}<br>
+                WPM: {{ finished_wpm }}<br>
                 <button class="btn btn-primary" @click="get_race_codes">Next</button>
             </div>
         </div>
@@ -26,6 +28,9 @@ import { ref } from "@vue/reactivity";
 const current_race_code = ref({});
 let exclude_race_codes = [];
 
+const finished_time = ref(null);
+const finished_wpm = ref(null);
+
 
 get_race_codes();
 
@@ -36,7 +41,6 @@ function get_race_codes() {
     axios
         .get("/api/v1/code/", { params: request_data })
         .then(resp => {
-            console.log(resp.data);
             current_race_code.value = resp.data[0];
             exclude_race_codes.push(current_race_code.value.id);
         })
@@ -44,7 +48,7 @@ function get_race_codes() {
 
 function race_finished(time, wpm) {
     current_race_code.value = {};
-    console.log(time);
-    console.log(wpm);
+    finished_time.value = time;
+    finished_wpm.value = wpm.toFixed(2);
 }
 </script>

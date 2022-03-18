@@ -23,6 +23,7 @@
 
                 :disabled="input_disabled"
                 @keydown="keyboard_pressed"
+                @keydown.tab.prevent
                 ref="template_txt_input"
                 v-model="user_input"
             >
@@ -84,7 +85,7 @@ function start() {
 function end() {
     clearInterval(stopwatch_interval);
     let words = props.code_text.split(" ").filter(n => n);
-    let wpm = (words.length / (stopwatch.value / 60)).toFixed(2);
+    let wpm = (words.length / (stopwatch.value / 60));
     emit("finished", stopwatch.value, wpm);
 }
 
@@ -114,6 +115,21 @@ function keyboard_pressed(e) {
                 code_block.value[user_idx.value] = code_block.value[user_idx.value].replace("<mark class='correct'>", "").replace("<mark class='incorrect'>", "").replace("</mark>", "");
             }
             break;
+        case "Tab":
+            for (const x of Array(4).keys()) {
+                user_idx.value++;
+                user_code_block = user_code_block + " ";
+                if (user_code_block.charAt(user_idx.value-1) == props.code_text.charAt(user_idx.value-1)) {
+                    code_block.value[user_idx.value-1] = "<mark class='correct'>" + code_block.value[user_idx.value-1] + "</mark>";
+                } else {
+                    code_block.value[user_idx.value-1] = "<mark class='incorrect'>" + code_block.value[user_idx.value-1] + "</mark>";
+                }
+            }   
+            code_block.value.forEach((elem, index) => {
+                code_block.value[index] = elem.replace("<u>", "").replace("</u>", "");
+            })
+            code_block.value[user_idx.value] = "<u>" + code_block.value[user_idx.value] + "</u>";
+            break;
         default:
             if (is_key_printable(e.keyCode) && user_idx.value + 1 < code_block.value.length) {
                 user_idx.value++;
@@ -127,11 +143,15 @@ function keyboard_pressed(e) {
                     }
                     user_idx.value++;
                     user_code_block = user_code_block + "\n" + spaces;
+                } else if (e.code == "Space" && props.code_text.charAt(user_idx.value-1) == "\n") {
+                    user_code_block = user_code_block + "\n";
                 } else {
                     user_code_block = user_code_block + e.key;
                 }
 
-                code_block.value[user_idx.value-1] = code_block.value[user_idx.value-1].replace("<u>", "").replace("</u>", "");
+                code_block.value.forEach((elem, index) => {
+                    code_block.value[index] = elem.replace("<u>", "").replace("</u>", "");
+                })
                 code_block.value[user_idx.value] = "<u>" + code_block.value[user_idx.value] + "</u>";
 
                 if (user_code_block.charAt(user_idx.value-1) == props.code_text.charAt(user_idx.value-1)) {
