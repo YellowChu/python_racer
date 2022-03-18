@@ -118,7 +118,11 @@ function keyboard_pressed(e) {
         case "Tab":
             for (const x of Array(4).keys()) {
                 user_idx.value++;
-                user_code_block = user_code_block + " ";
+                if (props.code_text.charAt(user_idx.value-1) == "\n") {
+                    user_code_block = user_code_block + "\n";
+                } else {
+                    user_code_block = user_code_block + " ";
+                }
                 if (user_code_block.charAt(user_idx.value-1) == props.code_text.charAt(user_idx.value-1)) {
                     code_block.value[user_idx.value-1] = "<mark class='correct'>" + code_block.value[user_idx.value-1] + "</mark>";
                 } else {
