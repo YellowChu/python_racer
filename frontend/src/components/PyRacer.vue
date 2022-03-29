@@ -1,21 +1,36 @@
 <template>
     <div class="container-fluid">
         <div class="row d-flex text-center align-items-center justify-content-center">
-            <div class="col">
-                <h2>{{ countdown }}</h2>
-            </div>
-            <div class="col">
-                <h2>{{ stopwatch }}</h2>
+
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-body text-white" :class="[ countdown == 'Start' ?  'bg-success' : 'bg-danger' ]">
+                        <h5 class="card-title"><font-awesome-icon :icon="['fas', 'traffic-light']" /></h5>
+                        <p class="card-text">{{ countdown }}</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body" :class="{ 'bg-primary': finished }">
+                        <h5 class="card-title"><font-awesome-icon :icon="['fas', 'stopwatch']" /> timer</h5>
+                        <p class="card-text">{{ stopwatch }}</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body" :class="{ 'bg-primary': finished }">
+                        <h5 class="card-title"><font-awesome-icon :icon="['fas', 'keyboard']" /> wpm</h5>
+                        <p class="card-text">{{ get_wpm() }}</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <!-- <font-awesome-icon :icon="['fas', 'clock']" /> -->
+
+        <div class="row mt-2">
             <div class="code-block text-start" style="font-size: 2rem;">
                 <pre v-html="code_block.join('')"></pre>
             </div>
         </div>
 
-        <div class="row text-start mt-2">
+        <div v-if="!finished" class="row text-start mt-2">
             <input
                 type="text"
                 class="form-control"
@@ -27,6 +42,9 @@
                 ref="template_txt_input"
                 v-model="user_input"
             >
+        </div>
+        <div v-else class="d-flex justify-content-end align-items-end mt-2">
+            <div class="btn btn-primary" @click="next">Next</div>
         </div>
     </div>
 </template>
@@ -48,6 +66,7 @@ const code_block = ref(props.code_text.split("").concat([""]));
 
 const countdown = ref(null);
 const stopwatch = ref(0);
+const finished = ref(false);
 let stopwatch_interval;
 
 const input_disabled = ref(true);
@@ -58,7 +77,6 @@ code_block.value[user_idx.value] = "<u>" + code_block.value[user_idx.value] + "<
 
 
 onMounted(() => {
-    console.log(props.code_text);
     countdown.value = 3;
     let countdown_interval = setInterval(() => {
         if (countdown.value === 1) {
@@ -84,9 +102,21 @@ function start() {
 
 function end() {
     clearInterval(stopwatch_interval);
+    finished.value = true;
+}
+
+function next() {
+    emit("finished");
+}
+
+function get_wpm() {
     let words = props.code_text.split(" ").filter(n => n);
-    let wpm = (words.length / (stopwatch.value / 60));
-    emit("finished", stopwatch.value, wpm);
+    if (stopwatch.value) {
+        let wpm = (words.length / (stopwatch.value / 60));
+        return wpm.toFixed(1)
+    } else {
+        return ""
+    }
 }
 
 function is_key_printable(keycode) {

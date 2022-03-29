@@ -27,6 +27,9 @@ import {
     faMailBulk,
     faMapMarked,
     faClock,
+    faStopwatch,
+    faTrafficLight,
+    faKeyboard,
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -55,5 +58,9 @@ library.add(faFolder);
 library.add(faFolderOpen);
 library.add(faMailBulk);
 library.add(faMapMarked);
+library.add(faClock);
+library.add(faStopwatch);
+library.add(faTrafficLight);
+library.add(faKeyboard);
 
 export default FontAwesomeIcon;

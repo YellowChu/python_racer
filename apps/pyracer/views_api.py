@@ -24,5 +24,8 @@ class CodeViewSet(
         if exclude_ids:
             qs = qs.exclude(id__in=exclude_ids)
 
-        random_index = randint(0, qs.count() - 1)
-        return qs[random_index:random_index+1]
+        if qs:
+            random_index = randint(0, qs.count() - 1)
+            return qs[random_index:random_index+1]
+        else:
+            return qs
