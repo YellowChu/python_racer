@@ -146,5 +146,5 @@ roadmap
 
 staticfiles/
 
-frontend/src/dist
-frontend/node_modules
+src/dist
+node_modules

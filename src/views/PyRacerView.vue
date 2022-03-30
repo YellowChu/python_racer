@@ -19,7 +19,6 @@
 import axios from "axios";
 
 import PyRacer from "@/components/PyRacer.vue";
-import python_codes from "@/resources/python_codes.js";
 
 import { ref } from "@vue/reactivity";
 
