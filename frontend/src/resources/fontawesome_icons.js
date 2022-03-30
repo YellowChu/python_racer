@@ -30,6 +30,7 @@ import {
     faStopwatch,
     faTrafficLight,
     faKeyboard,
+    faCode,
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -62,5 +63,6 @@ library.add(faClock);
 library.add(faStopwatch);
 library.add(faTrafficLight);
 library.add(faKeyboard);
+library.add(faCode);
 
 export default FontAwesomeIcon;
