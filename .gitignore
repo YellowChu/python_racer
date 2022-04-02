@@ -144,7 +144,8 @@ templates/static
 
 roadmap
 
-staticfiles/
+staticfiles/*
+!staticfiles/img/
 
 src/dist
 node_modules

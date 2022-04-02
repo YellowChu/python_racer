@@ -133,6 +133,8 @@ function is_key_printable(keycode) {
 
 function keyboard_pressed(e) {
     switch (e.key) {
+        case "Dead":
+            break;
         case "Backspace":
             if (user_idx.value - 1 >= 0) {
                 user_idx.value--;
