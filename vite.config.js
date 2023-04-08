@@ -4,7 +4,9 @@ import path from "path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    build: { manifest: true },
+    build: {
+        manifest: true,
+    },
     base: process.env === "production" ? "/static/" : "/",
     root: "./src",
     plugins: [vue()],

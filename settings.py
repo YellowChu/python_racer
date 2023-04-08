@@ -144,6 +144,7 @@ VITE_APP_DIR = BASE_DIR / "src"
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
+    BASE_DIR / "static",
     VITE_APP_DIR / "dist",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"

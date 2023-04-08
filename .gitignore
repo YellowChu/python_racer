@@ -149,3 +149,5 @@ staticfiles/*
 
 src/dist
 node_modules
+
+project_setup

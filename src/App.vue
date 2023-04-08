@@ -5,7 +5,7 @@
         <div class="link-corner">
             <div class="corner">
                 <span>
-                    <a href="https://github.com/YellowChu/python_racer"><i class="fa fa-github"></i></a>
+                    <a href="https://github.com/YellowChu/python_racer" target="_blank"><i class="fa fa-github"></i></a>
                 </span>
             </div>
         </div>
